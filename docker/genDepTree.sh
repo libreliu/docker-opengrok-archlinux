@@ -76,9 +76,17 @@ printDepTree () {
 
 preparePkgBuilds () {
   if [[ -d svntogit-packages/ ]]; then
-    ${PROXY_CMD_PREFIX} git clone https://github.com/archlinux/svntogit-packages.git
+    ${PROXY_CMD_PREFIX} git clone https://github.com/archlinux/svntogit-packages.git --depth=1
   else
     pushd svntogit-packages/
+    ${PROXY_CMD_PREFIX} git pull
+    popd
+  fi
+
+  if [[ -d svntogit-community/ ]]; then
+    ${PROXY_CMD_PREFIX} git clone https://github.com/archlinux/svntogit-community.git --depth=1
+  else
+    pushd svntogit-community/
     ${PROXY_CMD_PREFIX} git pull
     popd
   fi
@@ -95,8 +103,13 @@ getPkgBuilds () {
       ${PROXY_CMD_PREFIX} makepkg --allsource --skippgpcheck
       cp -v ${pkgName}-*.src.tar.gz ../../../sources/ 
       popd
+    elif [[ -d "svntogit-community/${pkgName}/trunk" ]]; then
+      pushd "svntogit-community/${pkgName}/trunk"
+      ${PROXY_CMD_PREFIX} makepkg --allsource --skippgpcheck
+      cp -v ${pkgName}-*.src.tar.gz ../../../sources/ 
+      popd
     else
-      echo "Package ${pkgName} not found in Arch repo, ignore"
+      echo "Package ${pkgName} not found in package or community, ignore"
     fi
   done
 }
