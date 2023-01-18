@@ -15,7 +15,9 @@ Also, Archlinux installation is assumed.
     - Automatically excludes `base` packages and associated dependencies
   - Use `getPkgsAUR.sh` to collect AUR packages of interest
     - No dependency resolution implemented
+  - Use `extractSources.sh` to extract all sources to `extracted/`
 - Start OpenGrok: `docker run -d -p 127.0.0.1:8080:8080 --cpus=8 --memory=8g -e NOMIRROR=1 -v $(pwd)/extracted/:/opengrok/src opengrok/docker:1.7`
+  - Requires ~2G mem for labwc and related dependencies (61 items)
 
 ## Future work
 
